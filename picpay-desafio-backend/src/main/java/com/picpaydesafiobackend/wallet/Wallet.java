@@ -1,11 +1,12 @@
 package com.picpaydesafiobackend.wallet;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 
-@Table("WALLET")
+@Table("WALLETS")
 public record Wallet(
 
         @Id
@@ -14,8 +15,14 @@ public record Wallet(
         Long cpf,
         String email,
         String password,
-        WalletType type,
-        BigDecimal balance
+        int type,
+        BigDecimal balance,
+        @Version
+        Long version
 
 ) {
+    public Wallet debit(BigDecimal value) {
+        return new Wallet(id, fullName, cpf, email, password, type,
+                balance.subtract(value), version);
+    }
 }
